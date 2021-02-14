@@ -1,3 +1,5 @@
+using API.Helpers;
+using AutoMapper;
 using Core.Interfaces;
 using Infrastructure;
 using Infrastructure.Data;
@@ -8,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+
 
 namespace API
 {
@@ -22,9 +25,11 @@ namespace API
           // This method gets called by the runtime. Use this method to add services to the container.
           public void ConfigureServices(IServiceCollection services)
           {
-          
+
                services.AddControllers();
                services.AddScoped<IProductRepository,ProductRepository>();
+               services.AddAutoMapper(typeof(MappingProfiles));
+               services.AddScoped(typeof(IGenericRepository<>),(typeof(GenericRepository<>)));
                services.AddDbContext<StoreContext>(options =>
                {
                     options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
