@@ -6,12 +6,13 @@ using Core.Interfaces;
 using Core.Specification;
 using API.Dtos;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
-     [ApiController]
-     [Route("api/[controller]")]
-     public class ProductsController : ControllerBase
+ 
+ [Authorize]
+     public class ProductsController : BaseApiController
      {
           private readonly IGenericRepository<Product> _productRepository; 
           private readonly IGenericRepository<ProductBrand> _productBrandRepository;

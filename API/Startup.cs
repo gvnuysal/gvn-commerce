@@ -1,4 +1,5 @@
 using API.Helpers;
+using API.Middleware;
 using AutoMapper;
 using Core.Interfaces;
 using Infrastructure;
@@ -27,9 +28,9 @@ namespace API
           {
 
                services.AddControllers();
-               services.AddScoped<IProductRepository,ProductRepository>();
+               services.AddScoped<IProductRepository, ProductRepository>();
                services.AddAutoMapper(typeof(MappingProfiles));
-               services.AddScoped(typeof(IGenericRepository<>),(typeof(GenericRepository<>)));
+               services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
                services.AddDbContext<StoreContext>(options =>
                {
                     options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
@@ -43,13 +44,11 @@ namespace API
           // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
           public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
           {
-               if (env.IsDevelopment())
-               {
-                    app.UseDeveloperExceptionPage();
-                    app.UseSwagger();
-                    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
-               }
+               app.UseMiddleware<ExceptionMiddleware>();
+               app.UseSwagger();
+               app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
 
+               app.UseStatusCodePagesWithReExecute("/errors/{0}");
                app.UseHttpsRedirection();
 
                app.UseRouting();
