@@ -5,13 +5,13 @@ namespace Core.Specification
      public class ProductsWithTypesAndBrandsSpecification : BaseSpecification<Product>
      {
           public ProductsWithTypesAndBrandsSpecification(ProductsSpecParams productParams)
-                 : base(x => (!productParams.BrandId.HasValue || x.ProductBrandId == productParams.BrandId) && (!productParams.TypeId.HasValue || x.ProductTypeId == productParams.TypeId))
+                 : base(x => (string.IsNullOrEmpty(productParams.Search) || x.Name.ToLower().Contains(productParams.Search)) && (!productParams.BrandId.HasValue || x.ProductBrandId == productParams.BrandId) && (!productParams.TypeId.HasValue || x.ProductTypeId == productParams.TypeId))
           {
-               AddInclude(x => x.ProductBrand); 
+               AddInclude(x => x.ProductBrand);
                AddInclude(x => x.ProductType);
 
                AddOrderBy(x => x.Name);
-               
+
                ApplyPaging(productParams.PageSize * (productParams.PageIndex - 1), productParams.PageSize);
 
                if (!string.IsNullOrEmpty(productParams.Sort))
