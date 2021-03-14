@@ -6,14 +6,14 @@ using Core.Interfaces;
 using Core.Specification;
 using API.Dtos;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using API.Errors;
 using Microsoft.AspNetCore.Http;
+using API.Helpers;
 
 namespace API.Controllers
 {
- 
- 
+
+
      public class ProductsController : BaseApiController
      {
           private readonly IGenericRepository<Product> _productRepository; 
@@ -28,14 +28,16 @@ namespace API.Controllers
                _productRepository = productRepository;
           }
 
-          [HttpGet]
-          
-          public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts([FromQuery] ProductsSpecParams productParams)
+          [HttpGet]          
+          public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery] ProductsSpecParams productParams)
           {
-               var spec = new ProductsWithTypesAndBrandsSpecification(productParams);
-               var products = await _productRepository.ListAsync(spec);
+               var spec = new ProductsWithTypesAndBrandsSpecification(productParams);               
+               var countSpec=new ProductWithFiltersForCountSpecification(productParams);
+               var totalItems=await _productRepository.CountAsync(spec);
+               var products=await _productRepository.ListAsync(spec);
+               var data=_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
 
-               return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
+               return Ok(new Pagination<ProductToReturnDto>(productParams.PageIndex,productParams.PageSize,totalItems,data));
           }
           [HttpGet]
           [Route("{id}")]
