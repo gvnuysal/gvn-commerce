@@ -18,6 +18,8 @@
     ]
   },
   "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false
+    "strictTemplate":true,
+    "strictDomEventTypes":false,
+    "enableI18nLegacyMessageIdFormat": false,
   }
 }
