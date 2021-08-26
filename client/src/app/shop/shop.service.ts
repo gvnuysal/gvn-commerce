@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { IBrand } from '../shared/models/brand';
 import { IPagination } from '../shared/models/pagination';
 import { IType } from '../shared/models/productType';
-import { delay, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ShopParams } from '../shared/models/shopParams';
 @Injectable({
   providedIn: 'root',
@@ -20,6 +20,9 @@ export class ShopService {
     }
     if (shopParams.typeId != 0) {
       params = params.append('typeId', shopParams.typeId.toString());
+    }
+    if(shopParams.search){
+      params=params.append('search',shopParams.search)
     }
 
     params = params.append('sort', shopParams.sort);
