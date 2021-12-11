@@ -1,6 +1,6 @@
 <div class="container">
     <div *ngIf="(basket$ | async) ===null">
-        <p>There are no items in your basket</p>
+        <p>Sepetiniz boş</p>
     </div>
 
     <div *ngIf="basket$|async">
@@ -13,19 +13,19 @@
                                 <thead>
                                     <tr>
                                         <th class="border-0 bg-light" scope="col">
-                                            <div class="p-2 px-3 text-uppercase">Product</div>
+                                            <div class="p-2 px-3 text-uppercase">Ürün</div>
                                         </th>
                                         <th scope="col" class="border-0 bg-light ">
-                                            <div class="py-2 text-uppercase">Price</div>
+                                            <div class="py-2 text-uppercase">Fİyat</div>
                                         </th>
                                         <th scope="col" class="border-0 bg-light ">
-                                            <div class="py-2 text-uppercase">Quantity</div>
+                                            <div class="py-2 text-uppercase">Mİktar</div>
                                         </th>
                                         <th scope="col" class="border-0 bg-light ">
-                                            <div class="py-2 text-uppercase">Total</div>
+                                            <div class="py-2 text-uppercase">Toplam</div>
                                         </th>
                                         <th scope="col" class="border-0 bg-light ">
-                                            <div class="py-2 text-uppercase">Remove</div>
+                                            <div class="py-2 text-uppercase">İşlem</div>
                                         </th>
                                     </tr>
                                 </thead>
@@ -48,11 +48,11 @@
                                         <td class="align-middle"><strong>{{ item.price | currency }}</strong></td>
                                         <td class="align-middle">
                                             <div class="d-flex align-items-center">
-                                                <i class="fa fa-minus-circle text-warning mr-2"
+                                                <i (click)="decrementItemQuantity(item)" class="fa fa-minus-circle text-warning mr-2"
                                                     style="cursor: pointer; font-size: 2em"> </i><span
                                                     class="font-weight-bold" style="font-size: 1.5em;">{{item.quantity}}
                                                 </span>
-                                                <i class="fa fa-plus-circle text-warning mx-2"
+                                                <i (click)="incrementItemQuantity(item)" class="fa fa-plus-circle text-warning mx-2"
                                                     style="cursor: pointer; font-size: 2em"></i>
                                             </div>
                                         </td>
@@ -63,7 +63,7 @@
                                         </td>
                                         <td class="align-middle text-center">
                                             <a class="text-danger">
-                                                <i class="fa fa-trash" style="font-size: 2em;"></i>
+                                                <i (click)="removeBasketItem(item)" class="fa fa-trash" style="font-size: 2em;"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -75,7 +75,7 @@
                 <div class="row">
                     <div class="col-6 offset-6">
                         <app-order-totals></app-order-totals>
-                        <a routerLink="/checkout" class="btn btn-outline-primary py-2 btn-block"> Proceed to checkout</a>
+                        <a routerLink="/checkout" class="btn btn-outline-primary py-2 btn-block">Alışverişe Tamamla</a>
                     </div>
                 </div>
             </div>
