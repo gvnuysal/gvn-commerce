@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using API.Dtos;
 using API.Errors;
 using API.Extensions;
+using AutoMapper;
 using Core.Entities.Identity;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -17,12 +18,14 @@ namespace API.Controllers
 
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
+        private readonly IMapper _mapper;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService,IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _mapper = mapper;
         }
  
 
@@ -86,10 +89,24 @@ namespace API.Controllers
         [Authorize]
         [HttpGet]
         [Route("address")]
-        public async Task<ActionResult<Address>> GetUserAddressAsync()
+        public async Task<ActionResult<AddressDto>> GetUserAddressAsync()
         { 
             var user = await _userManager.FindByUserClaimsPrincipalWithAddressAsync(User);
-            return user.Address;
+            var data= _mapper.Map<Address,AddressDto>(user.Address);
+            return data;
+        }
+        
+        [Authorize]
+        [HttpPut]
+        [Route("address")]
+        public async Task<ActionResult<AddressDto>> UpdateUserAddressAsync(AddressDto address)
+        {
+            var user = await  _userManager.FindByUserClaimsPrincipalWithAddressAsync(User);
+            user.Address = _mapper.Map<AddressDto, Address>(address);
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded) return Ok(_mapper.Map<Address, AddressDto>(user.Address));
+
+            return BadRequest("Problem updating your address");
         }
     }
 }
